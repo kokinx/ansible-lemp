@@ -31,6 +31,8 @@
     path: /var/www/vhosts/{{ domain_name }}/public_html
     state: directory
     mode: "0755"
+    owner: nginx
+    group: nginx
     recurse: yes
 
 - name: copy index.html
