@@ -1,0 +1,51 @@
+---
+- name: remove mariadb
+  yum:
+    name: mariadb-libs
+    state: absent
+
+- name: remove default mysql-community
+  yum:
+    name: mysql-community-*
+    state: absent
+
+- name: install RPM-GPG-KEY-mysql
+  rpm_key: 
+    key: https://repo.mysql.com/RPM-GPG-KEY-mysql-2022
+    state: present
+
+- name: install repositry for mysql
+  yum:
+    name: https://repo.mysql.com//mysql80-community-release-el7-7.noarch.rpm
+    state: present
+  ignore_errors: yes
+
+- name: install optional packages
+  yum:
+    name:
+      - MySQL-python
+      - expect
+    state: present
+
+- name: install mysql community devel
+  yum:
+    name: mysql-community-devel*
+    state: present
+
+- name: install mysql community server
+  yum:
+    name: mysql-community-server
+    state: present
+
+- name: start mysql
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: copy my.cnf
+  copy:
+    src: ../templates/my.cnf
+    dest: /etc
+  notify:
+    - restart mysqld

@@ -1,0 +1,14 @@
+---
+- hosts: lamp-server
+  become: true
+  user: ec2-user
+  roles:
+    - common/hostname
+    - common/selinux
+    - common/timezone    
+    - common/swap
+    - common/user_add
+    - common/yum_update
+    - mysql
+    - nginx
+    - php

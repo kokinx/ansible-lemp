@@ -1,0 +1,6 @@
+---
+- name: create user
+  user:
+    name: "{{ user_name }}"
+    password: "{{ user_password | password_hash('sha512') }}"
+    generate_ssh_key: yes

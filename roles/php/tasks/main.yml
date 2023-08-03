@@ -1,0 +1,37 @@
+---
+- name: install epel and remi
+  yum:
+    name:
+      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+      - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+    disable_gpg_check: yes
+
+- name: enable to install php
+  shell: "amazon-linux-extras enable php7.3"
+  changed_when: False
+
+- name: install php
+  yum:
+    name: "{{ item }}"
+    enablerepo: amzn2extra-php7.3
+    state: present
+  with_items:
+    - "{{ php_modules }}"
+  ignore_errors: true
+
+- name: copy php.ini
+  copy:
+    src: ../templates/php.ini
+    dest: /etc
+
+- name: copy www.conf
+  copy:
+    src: ../templates/www.conf
+    dest: /etc/php-fpm.d/www.conf
+  notify:
+    - restart php-fpm
+
+- name: enable php-fpm
+  service:
+    name: php-fpm
+    enabled: yes
